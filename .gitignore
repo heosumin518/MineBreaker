@@ -2,11 +2,9 @@
 .vs/
 Binaries/
 Intermediate/
+*.exe
 
 # IDE project files
 *.sln
 *.vcxproj*
 *.user
-
-# Tools
-Tools/premake5.exe
