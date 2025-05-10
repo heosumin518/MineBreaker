@@ -25,7 +25,7 @@ group "Dependencies"
         }
 
         includedirs {
-            "Dependencies/glfw/include"
+            "Dependencies/glfw/include",
         }
 
         filter "system:windows"
@@ -98,7 +98,9 @@ project "Engine"
 
     includedirs {
         "Engine",
-        "Dependencies/glfw/include"
+        "Dependencies/glfw/include",
+        "Dependencies/spdlog/include"
+
     }
 
 -- GameApp 프로젝트
@@ -120,7 +122,8 @@ project "GameApp"
     includedirs {
         "GameApp",
         "Engine",
-        "Dependencies/glfw/include"
+        "Dependencies/glfw/include",
+        "Dependencies/spdlog/include"
     }
 
     links {
