@@ -28,7 +28,7 @@ git submodule update --init --recursive
 2. Then run:
 
 ```bash
-Tools\generate.bat
+./generate.bat
 ```
 
 ### Output Structure (after build)
