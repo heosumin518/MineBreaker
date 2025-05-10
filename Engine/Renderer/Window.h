@@ -1,0 +1,38 @@
+#pragma once
+#include "OpenGLContext.h"
+
+struct WindowProps
+{
+	std::string Title;
+	uint32_t Width;
+	uint32_t Height;
+
+	WindowProps(const std::string& title = "My Engine",
+		uint32_t width = 800,
+		uint32_t height = 600)
+		: Title(title), Width(width), Height(height)
+	{
+	}
+};
+
+class Window
+{
+public:
+	Window(const WindowProps& props);
+
+private:
+	void Initialize(const WindowProps& props);
+
+private:
+	GLFWwindow* m_Window;
+	std::unique_ptr<OpenGLContext> m_Context;
+
+	struct WindowData
+	{
+		std::string Title;
+		unsigned int Width, Height;
+		bool VSync;
+	};
+
+	WindowData m_Data;
+};
