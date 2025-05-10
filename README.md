@@ -24,7 +24,7 @@ git submodule update --init --recursive
 
 ### Generate Visual Studio project files
 
-1. [Download premake5.exe](https://github.com/premake/premake-core/releases) and place it in the `Tools/` folder.
+1. [Download premake5.exe](https://github.com/premake/premake-core/releases) and place it in the project root directory (next to generate.bat and premake5.lua).
 2. Then run:
 
 ```bash
