@@ -8,62 +8,64 @@ workspace "MineBreaker"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- GLFW 프로젝트
-project "glfw"
-    location "Dependencies/glfw"
-    kind "StaticLib"
-    language "C"
-    staticruntime "off"
+group "Dependencies"
+    project "glfw"
+        location "Dependencies/glfw"
+        kind "StaticLib"
+        language "C"
+        staticruntime "off"
 
-    targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
-    objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+        targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
+        objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
 
-    files {
-        "Dependencies/glfw/include/GLFW/**.h",
-        "Dependencies/glfw/src/**.h",
-        "Dependencies/glfw/src/**.c"
-    }
-
-    includedirs {
-        "Dependencies/glfw/include"
-    }
-
-    filter "system:windows"
-        defines { "_GLFW_WIN32" }
-        removefiles {
-            "Dependencies/glfw/src/glx_*",
-            "Dependencies/glfw/src/x11_*",
-            "Dependencies/glfw/src/linux_*",
-            "Dependencies/glfw/src/posix_*",
-            "Dependencies/glfw/src/cocoa_*"
+        files {
+            "Dependencies/glfw/include/GLFW/**.h",
+            "Dependencies/glfw/src/**.h",
+            "Dependencies/glfw/src/**.c"
         }
 
-    filter "system:macosx"
-    defines { "_GLFW_COCOA" }
-    removefiles {
-        "Dependencies/glfw/src/win32_*",
-        "Dependencies/glfw/src/x11_*",
-        "Dependencies/glfw/src/glx_*",
-        "Dependencies/glfw/src/linux_*",
-        "Dependencies/glfw/src/posix_*",
-        "Dependencies/glfw/src/wgl_*"
-    }
+        includedirs {
+            "Dependencies/glfw/include"
+        }
 
-    filter "system:linux"
-    defines { "_GLFW_X11" }
-    removefiles {
-        "Dependencies/glfw/src/win32_*",
-        "Dependencies/glfw/src/cocoa_*",
-        "Dependencies/glfw/src/posix_time.h",
-        "Dependencies/glfw/src/wgl_*"
-    }
+        filter "system:windows"
+            defines { "_GLFW_WIN32" }
+            removefiles {
+                "Dependencies/glfw/src/glx_*",
+                "Dependencies/glfw/src/x11_*",
+                "Dependencies/glfw/src/linux_*",
+                "Dependencies/glfw/src/posix_*",
+                "Dependencies/glfw/src/cocoa_*"
+            }
 
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "on"
+        filter "system:macosx"
+        defines { "_GLFW_COCOA" }
+        removefiles {
+            "Dependencies/glfw/src/win32_*",
+            "Dependencies/glfw/src/x11_*",
+            "Dependencies/glfw/src/glx_*",
+            "Dependencies/glfw/src/linux_*",
+            "Dependencies/glfw/src/posix_*",
+            "Dependencies/glfw/src/wgl_*"
+        }
 
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "on"
+        filter "system:linux"
+        defines { "_GLFW_X11" }
+        removefiles {
+            "Dependencies/glfw/src/win32_*",
+            "Dependencies/glfw/src/cocoa_*",
+            "Dependencies/glfw/src/posix_time.h",
+            "Dependencies/glfw/src/wgl_*"
+        }
+
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "on"
+
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "on"
+group ""
 
 -- Engine 프로젝트
 project "Engine"
