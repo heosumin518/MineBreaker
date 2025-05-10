@@ -7,8 +7,8 @@ workspace "MineBreaker"
 
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- GLFW 프로젝트
 group "Dependencies"
+-- GLFW 프로젝트
     project "glfw"
         location "Dependencies/glfw"
         kind "StaticLib"
@@ -65,6 +65,19 @@ group "Dependencies"
         filter "configurations:Release"
             runtime "Release"
             optimize "on"
+
+-- spdlog
+    project "spdlog"
+    location "Dependencies/spdlog"
+    kind "None" -- headers only so no need to build
+    language "C++"
+
+    includedirs { "Dependencies/spdlog/include" }
+
+    files {
+        "Dependencies/spdlog/include/**.h",
+        "Dependencies/spdlog/include/**.hpp"
+    }
 group ""
 
 -- Engine 프로젝트
