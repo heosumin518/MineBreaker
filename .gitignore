@@ -1,1 +1,12 @@
-.vs
+# Generated build files
+.vs/
+Binaries/
+Intermediate/
+
+# IDE project files
+*.sln
+*.vcxproj*
+*.user
+
+# Tools
+Tools/premake5.exe
