@@ -22,5 +22,11 @@ void Window::Initialize(const WindowProps& props)
 		// TODO: glfwInit assert
 	}
 
+	m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), props.Title.c_str(), nullptr, nullptr);
+	++s_GLFWWindowCount;
+
+	m_Context = std::make_unique<OpenGLContext>(m_Window);
+	m_Context->Initialize();
+
 
 }

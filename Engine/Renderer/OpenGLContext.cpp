@@ -8,7 +8,7 @@ OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 
 void OpenGLContext::Initialize()
 {
-
+	glfwMakeContextCurrent(m_WindowHandle);
 }
 
 void OpenGLContext::SwapBuffers()

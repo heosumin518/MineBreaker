@@ -20,4 +20,3 @@ private:
 #define CORE_ERROR(...) ::Log::GetCoreLogger()->error(__VA_ARGS__)
 
 // Client log macros
-#define 

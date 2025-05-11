@@ -78,6 +78,36 @@ group "Dependencies"
         "Dependencies/spdlog/include/**.h",
         "Dependencies/spdlog/include/**.hpp"
     }
+
+-- GLAD
+    project "glad"
+        location "Dependencies/glad"
+        kind "StaticLib"
+        language "C"
+        staticruntime "on" -- 헤더 전용은 아니지만 src/glad.c 링크됨
+
+        targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
+        objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+        files {
+            "Dependencies/glad/include/glad/glad.h",
+            "Dependencies/glad/include/KHR/khrplatform.h",
+            "Dependencies/glad/src/glad.c"
+        }
+
+        includedirs {
+            "Dependencies/glad/include"
+        }
+
+        filter "system:windows"
+            systemversion "latest"
+
+        filter "configurations:Debug"
+            symbols "On"
+
+        filter "configurations:Release"
+            optimize "On"
+
 group ""
 
 -- Engine 프로젝트
@@ -87,6 +117,8 @@ project "Engine"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
+
+    buildoptions { "/utf-8" }
 
     targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
     objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -99,8 +131,14 @@ project "Engine"
     includedirs {
         "Engine",
         "Dependencies/glfw/include",
+        "Dependencies/glad/include",
         "Dependencies/spdlog/include"
+    }
 
+    links {
+        "glfw",
+        "glad",
+        "opengl32.lib"
     }
 
 -- GameApp 프로젝트
@@ -110,6 +148,8 @@ project "GameApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
+
+    buildoptions { "/utf-8" }
 
     targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
     objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -123,11 +163,10 @@ project "GameApp"
         "GameApp",
         "Engine",
         "Dependencies/glfw/include",
-        "Dependencies/spdlog/include"
+        "Dependencies/spdlog/include",
+        "Dependencies/glad/include"
     }
 
     links {
-        "Engine",
-        "glfw",
-        "opengl32"
+        "Engine"
     }
