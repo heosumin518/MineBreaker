@@ -16,7 +16,7 @@ Window::Window(const WindowProps& props)
 Window::~Window()
 {
 	Shutdown();
-	CORE_INFO("Shutting down");
+	CORE_INFO("Close {} window..", m_Data.Title);
 }
 
 void Window::OnUpdate()
