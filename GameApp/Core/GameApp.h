@@ -5,7 +5,7 @@
 class GameApp : public Application
 {
 public:
-	GameApp(const ApplicationSpecification& spec)
+	GameApp(const AppInfo& spec)
 		: Application(spec)
 	{
 	}

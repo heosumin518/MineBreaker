@@ -3,8 +3,8 @@
 #include "Timer.h"
 #include "Renderer/Renderer.h"
 
-Application::Application(const ApplicationSpecification& spec)
-	: m_Specification(spec)
+Application::Application(const AppInfo& spec)
+	: m_Info(spec)
 {
 	WindowProps windowProps;
 	windowProps.Width = spec.Width;

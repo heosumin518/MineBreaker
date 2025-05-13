@@ -5,7 +5,7 @@ int main(int argc, char** argv)
 {
 	Log::Init();
 
-	ApplicationSpecification spec;
+	AppInfo spec;
 	spec.Width = 800.f;
 	spec.Height = 600.f;
 	spec.Title = "MineBreaker";
