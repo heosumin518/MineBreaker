@@ -52,7 +52,10 @@ void Window::Initialize(const WindowProps& props)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // mac os
+
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
 	m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), props.Title.c_str(), nullptr, nullptr);
 	if (m_Window == nullptr)
@@ -68,7 +71,7 @@ void Window::Initialize(const WindowProps& props)
 
 	SetVSync(true);
 
-	glViewport(0, 0, props.Width, props.Height);
+	//glViewport(0, 0, props.Width, props.Height);
 
 	// 윈도우 리사이징
 	glfwSetFramebufferSizeCallback(m_Window, FramebufferSizeCallback);

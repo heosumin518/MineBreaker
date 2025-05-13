@@ -5,8 +5,11 @@ int main(int argc, char** argv)
 {
 	Log::Init();
 
-	const std::string name = "MineBreaker";
-	GameApp* game = new GameApp(name);
+	ApplicationSpecification spec;
+	spec.Width = 800.f;
+	spec.Height = 600.f;
+	spec.Title = "MineBreaker";
+	GameApp* game = new GameApp(spec);
 
 	game->Run();
 

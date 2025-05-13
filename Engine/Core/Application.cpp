@@ -3,13 +3,13 @@
 #include "Timer.h"
 #include "Renderer/Renderer.h"
 
-Application::Application(const std::string& applicationName)
-	: m_Name(applicationName)
+Application::Application(const ApplicationSpecification& spec)
+	: m_Specification(spec)
 {
 	WindowProps windowProps;
-	windowProps.Width = 800;
-	windowProps.Height = 600;
-	windowProps.Title = applicationName;
+	windowProps.Width = spec.Width;
+	windowProps.Height = spec.Height;
+	windowProps.Title = spec.Title;
 
 	m_Window = std::make_unique<Window>(windowProps);
 }
@@ -25,16 +25,14 @@ void Application::Run()
 	GLFWwindow* window = m_Window->GetNativeWindow();
 
 	Timer timer;
-	Renderer renderer;
+	Renderer renderer(m_Window->GetWidth(), m_Window->GetHeight());
 
 	while (!glfwWindowShouldClose(window))
 	{
-		// TODO: Manager Update
-		// TODO: Run Actual Game Code;
 		timer.OnUpdate();
-		renderer.OnUpdate();
 
-		processInput(window);
+		processInput(window);	// temp
+		renderer.OnUpdate();
 
 		m_Window->OnUpdate();
 	}

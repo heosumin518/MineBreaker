@@ -5,8 +5,8 @@
 class GameApp : public Application
 {
 public:
-	GameApp(std::string name)
-		: Application(name)
+	GameApp(const ApplicationSpecification& spec)
+		: Application(spec)
 	{
 	}
 };

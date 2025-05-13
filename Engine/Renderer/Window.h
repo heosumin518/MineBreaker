@@ -32,6 +32,7 @@ public:
 
 	GLFWwindow* GetNativeWindow() const { return m_Window; }
 
+
 private:
 	void Initialize(const WindowProps& props);
 	void Shutdown();
