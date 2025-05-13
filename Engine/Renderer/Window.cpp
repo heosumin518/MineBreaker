@@ -16,12 +16,23 @@ Window::Window(const WindowProps& props)
 Window::~Window()
 {
 	Shutdown();
+	CORE_INFO("Shutting down");
 }
 
 void Window::OnUpdate()
 {
 	glfwPollEvents();
 	m_Context->SwapBuffers();
+}
+
+void Window::SetVSync(bool enabled)
+{
+	if (enabled)
+		glfwSwapInterval(1);
+	else
+		glfwSwapInterval(0);
+
+	m_Data.VSync = enabled;
 }
 
 void Window::Initialize(const WindowProps& props)
@@ -54,6 +65,8 @@ void Window::Initialize(const WindowProps& props)
 
 	m_Context = std::make_unique<OpenGLContext>(m_Window);
 	m_Context->Initialize();
+
+	SetVSync(true);
 
 	glViewport(0, 0, props.Width, props.Height);
 

@@ -9,4 +9,6 @@ int main(int argc, char** argv)
 	GameApp* game = new GameApp(name);
 
 	game->Run();
+
+	delete game;
 }

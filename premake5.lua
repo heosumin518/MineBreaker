@@ -102,11 +102,14 @@ group "Dependencies"
         filter "system:windows"
             systemversion "latest"
 
-        filter "configurations:Debug"
-            symbols "On"
+    filter "configurations:Debug"
+        defines { "_DEBUG" }
+        symbols "On"
 
-        filter "configurations:Release"
-            optimize "On"
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
 
 group ""
 
@@ -141,6 +144,15 @@ project "Engine"
         "opengl32.lib"
     }
 
+    filter "configurations:Debug"
+        defines { "_DEBUG" }
+        symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+
+
 -- GameApp 프로젝트
 project "GameApp"
     location "GameApp"
@@ -170,3 +182,12 @@ project "GameApp"
     links {
         "Engine"
     }
+
+    filter "configurations:Debug"
+    defines { "_DEBUG" }
+    symbols "On"
+
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        optimize "On"
+

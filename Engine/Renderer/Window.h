@@ -27,6 +27,9 @@ public:
 	unsigned int GetWidth() const { return m_Data.Width; }
 	unsigned int GetHeight() const { return m_Data.Height; }
 
+	void SetVSync(bool enabled);
+	bool IsVSync() const { return m_Data.VSync; }
+
 	GLFWwindow* GetNativeWindow() const { return m_Window; }
 
 private:
