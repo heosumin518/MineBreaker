@@ -1,5 +1,6 @@
 #pragma once
 #include "OpenGLContext.h"
+#include <memory>
 
 struct WindowProps
 {
@@ -19,9 +20,18 @@ class Window
 {
 public:
 	Window(const WindowProps& props);
+	virtual ~Window();
+
+	void OnUpdate();
+
+	unsigned int GetWidth() const { return m_Data.Width; }
+	unsigned int GetHeight() const { return m_Data.Height; }
+
+	GLFWwindow* GetNativeWindow() const { return m_Window; }
 
 private:
 	void Initialize(const WindowProps& props);
+	void Shutdown();
 
 private:
 	GLFWwindow* m_Window;

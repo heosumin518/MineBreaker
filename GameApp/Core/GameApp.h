@@ -1,3 +1,12 @@
 #pragma once
+#include <string>
+#include "Core/Application.h"
 
-#include "resource.h"
+class GameApp : public Application
+{
+public:
+	GameApp(std::string name)
+		: Application(name)
+	{
+	}
+};
