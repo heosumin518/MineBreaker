@@ -6,24 +6,19 @@
 #include "glad/glad.h"
 
 CircleWall::CircleWall(const glm::vec2& center, float radius)
-	: m_Collider(center, radius)
-	, m_Center(center)
+	: m_Center(center)
 	, m_Radius(radius)
+	, m_Collider(center, radius)
 {
 }
 
 void CircleWall::Update(float deltaTime)
 {
-	// 충돌 검사
 
 }
 
 void CircleWall::Render()
 {
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR)
-		std::cout << "OpenGL ERROR: " << err << std::endl;
-
 	const int segments = 64;
 	float angleStep = 2.0f * glm::pi<float>() / segments;
 

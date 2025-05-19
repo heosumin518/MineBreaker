@@ -17,7 +17,6 @@ public:
 private:
 	glm::vec2 m_Center;
 	float m_Radius;
-
 	CircleCollider m_Collider;
 };
 

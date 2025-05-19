@@ -29,8 +29,6 @@ void Ball::Render()
 	const int segments = 32;
 	float angleStep = 2.0f * glm::pi<float>() / segments;
 
-	glm::vec2 center = m_Collider.GetCenter();
-
 	glColor3f(0.2f, 0.6f, 1.0f); // 밝은 파란색 공
 
 	glBegin(GL_TRIANGLE_FAN);

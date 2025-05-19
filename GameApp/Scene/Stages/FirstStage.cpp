@@ -24,7 +24,9 @@ void FirstStage::Initialize()
 void FirstStage::Update(float deltaTime)
 {
 	for (auto* object : m_Objects)
+	{
 		object->Update(deltaTime);
+	}
 
 	// 충돌 검사
 	Ball* ball = dynamic_cast<Ball*>(GetObjectByName("Ball"));
