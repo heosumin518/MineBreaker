@@ -6,8 +6,8 @@ int main(int argc, char** argv)
 	Log::Init();
 
 	AppInfo spec;
-	spec.Width = 800.f;
-	spec.Height = 600.f;
+	spec.Width = 600.f;
+	spec.Height = 800.f;
 	spec.Title = "MineBreaker";
 	GameApp* game = new GameApp(spec);
 

@@ -10,7 +10,9 @@ public:
 	void Update(float deltaTime) override;
 	void Render() override;
 
-	CircleCollider& GetCollider() { return m_Collider; }
+	ICollider* GetCollider() { return &m_Collider; }
+
+	void Reflect(const glm::vec2& normal);
 
 private:
 	CircleCollider m_Collider;

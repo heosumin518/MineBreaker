@@ -6,19 +6,6 @@ Scene::Scene(const std::string& name)
 {
 }
 
-void Scene::Update(float deltaTime)
-{
-	for (auto* object : m_Objects)
-	{
-		object->Update(deltaTime);
-	}
-}
-
-void Scene::Render()
-{
-
-}
-
 GameObject* Scene::GetObjectByName(const std::string& name) const
 {
 	for (auto* object : m_Objects)

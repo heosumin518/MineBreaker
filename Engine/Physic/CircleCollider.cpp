@@ -29,12 +29,18 @@ bool CircleCollider::CheckCircleCollision(const CircleCollider& a, const CircleC
 {
 	glm::vec2 diff = b.GetCenter() - a.GetCenter();
 	float dist = glm::length(diff);
-	float combined = a.GetRadius() + b.GetRadius();
+	float sum = dist + b.GetRadius();
 
-	if (dist < combined) {
-		outNormal = glm::normalize(diff);
+	if (sum > a.GetRadius())
+	{
+		if (dist > 0.0001f)
+			outNormal = glm::normalize(diff);
+		else
+			outNormal = glm::vec2(0.0f, 1.0f); // 중심이 완전히 겹친 경우
+
 		return true;
 	}
+
 	return false;
 }
 
