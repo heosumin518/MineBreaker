@@ -110,6 +110,21 @@ group "Dependencies"
         defines { "NDEBUG" }
         optimize "On"
 
+-- GLM
+    -- GLM
+    project "glm"
+        location "Dependencies/glm"
+        kind "None" -- 헤더 전용이라 컴파일할 소스 없음
+        language "C++"
+
+        includedirs {
+            "Dependencies/glm"
+        }
+
+        files {
+            "Dependencies/glm/glm/**.hpp",
+            "Dependencies/glm/glm/**.inl"
+        }
 
 group ""
 
@@ -135,7 +150,8 @@ project "Engine"
         "Engine",
         "Dependencies/glfw/include",
         "Dependencies/glad/include",
-        "Dependencies/spdlog/include"
+        "Dependencies/spdlog/include",
+        "Dependencies/glm"
     }
 
     links {
@@ -176,7 +192,8 @@ project "GameApp"
         "Engine",
         "Dependencies/glfw/include",
         "Dependencies/spdlog/include",
-        "Dependencies/glad/include"
+        "Dependencies/glad/include",
+        "Dependencies/glm"
     }
 
     links {
