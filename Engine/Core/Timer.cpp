@@ -14,7 +14,7 @@ Timer::Timer()
     m_FPS = 0;
 }
 
-void Timer::OnUpdate()
+void Timer::Update()
 {
     const auto now = Clock::now();
     float delta = std::chrono::duration<float>(now - m_LastTime).count();

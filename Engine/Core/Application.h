@@ -2,6 +2,10 @@
 #include "Renderer/Window.h"
 #include <memory>
 
+class SceneManager;
+class Renderer;
+class Timer;
+
 struct AppInfo
 {
 	std::string Title;
@@ -17,10 +21,15 @@ class Application
 public:
 	Application(const AppInfo& spec);
 
-	void Run();
+	virtual void Initialize() = 0;
+	void Run() const;
+
+protected:
+	std::shared_ptr<Timer> m_Timer;
+	std::shared_ptr<Renderer> m_Renderer;
+	std::shared_ptr<SceneManager> m_SceneManager;
 
 private:
 	AppInfo m_Info;
 	std::unique_ptr<Window> m_Window;
 };
-

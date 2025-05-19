@@ -6,7 +6,7 @@ class Timer
 public:
 	Timer();
 
-	void OnUpdate();
+	void Update();
 
     float GetDeltaTime() const { return m_DeltaTime; }
     float GetElapsedTime() const { return m_ElapsedTime; }

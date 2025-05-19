@@ -19,7 +19,7 @@ Window::~Window()
 	CORE_INFO("Close {} window..", m_Data.Title);
 }
 
-void Window::OnUpdate()
+void Window::Update()
 {
 	glfwPollEvents();
 	m_Context->SwapBuffers();
@@ -51,7 +51,8 @@ void Window::Initialize(const WindowProps& props)
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

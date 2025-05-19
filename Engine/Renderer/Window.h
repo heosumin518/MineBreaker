@@ -22,7 +22,7 @@ public:
 	Window(const WindowProps& props);
 	virtual ~Window();
 
-	void OnUpdate();
+	void Update();
 
 	unsigned int GetWidth() const { return m_Data.Width; }
 	unsigned int GetHeight() const { return m_Data.Height; }

@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Timer.h"
 #include "Renderer/Renderer.h"
+#include "Scene/SceneManager.h"
 
 Application::Application(const AppInfo& spec)
 	: m_Info(spec)
@@ -12,6 +13,10 @@ Application::Application(const AppInfo& spec)
 	windowProps.Title = spec.Title;
 
 	m_Window = std::make_unique<Window>(windowProps);
+
+	m_Timer = std::make_shared<Timer>();
+	m_Renderer = std::make_shared<Renderer>(m_Window->GetWidth(), m_Window->GetHeight());
+	m_SceneManager = std::make_shared<SceneManager>();
 }
 
 void processInput(GLFWwindow* window)
@@ -20,20 +25,21 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-void Application::Run()
+void Application::Run() const
 {
 	GLFWwindow* window = m_Window->GetNativeWindow();
 
-	Timer timer;
-	Renderer renderer(m_Window->GetWidth(), m_Window->GetHeight());
-
 	while (!glfwWindowShouldClose(window))
 	{
-		timer.OnUpdate();
-
+		m_Timer->Update();
 		processInput(window);	// temp
-		renderer.OnUpdate();
 
-		m_Window->OnUpdate();
+		m_Renderer->BeginRender(m_Window->GetWidth(), m_Window->GetHeight());
+
+		m_SceneManager->Update(m_Timer->GetDeltaTime());
+		m_SceneManager->Render();
+
+		// last
+		m_Window->Update();
 	}
 }

@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 	spec.Title = "MineBreaker";
 	GameApp* game = new GameApp(spec);
 
+	game->Initialize();
 	game->Run();
 
 	delete game;

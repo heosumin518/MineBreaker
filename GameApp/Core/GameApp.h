@@ -9,4 +9,6 @@ public:
 		: Application(spec)
 	{
 	}
+
+	void Initialize() override;
 };

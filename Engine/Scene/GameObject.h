@@ -9,8 +9,8 @@ public:
 	GameObject();
 	~GameObject() = default;
 
-	void Update(float deltaTime) {}
-	void Render() {}
+	virtual void Update(float deltaTime) {}
+	virtual void Render() {}
 
 	std::string GetName() { return m_Name; }
 	void SetName(const std::string& name) { m_Name = name; }

@@ -11,6 +11,7 @@ void OpenGLContext::Initialize()
 {
 	glfwMakeContextCurrent(m_WindowHandle);
 	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	glfwSwapInterval(1);
 	// TODO glad init assert
 
 	CORE_INFO("OpenGL Info:");
