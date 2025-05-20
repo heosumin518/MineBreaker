@@ -4,24 +4,23 @@
 
 Ball::Ball(const glm::vec2& startPos, float radius)
 	: m_Collider(startPos, radius)
-	, m_Velocity(glm::vec2(1.0f, 1.0f))
+	, m_Velocity(glm::vec2())
 	, m_Radius(radius)
+	, m_State(BallState::Ready)
 {
 	SetPos(startPos);
-	m_Velocity = glm::vec2(150.0f, 80.0f); // 원하는 방향과 속도 설정
+	m_Velocity = glm::vec2(150.0f, 80.0f);
 }
 
 void Ball::Update(float deltaTime)
 {
-	// 이동
-	glm::vec2 pos = m_Collider.GetCenter();
-	pos += m_Velocity * deltaTime;
-	m_Collider.SetCenter(pos);
-	SetPos(pos);
-
-	// 충돌 검사
-
-	// 트랜스폼 갱신
+	if (m_State == BallState::Flying)
+	{
+		glm::vec2 pos = m_Collider.GetCenter();
+		pos += m_Velocity * deltaTime;
+		m_Collider.SetCenter(pos);
+		SetPos(pos);
+	}
 }
 
 void Ball::Render()
@@ -47,4 +46,45 @@ void Ball::Render()
 void Ball::Reflect(const glm::vec2& normal)
 {
 	m_Velocity = glm::reflect(m_Velocity, normal);
+}
+
+void Ball::Fire(const glm::vec2& direction, float speed)
+{
+	m_Velocity = glm::normalize(direction) * speed;
+	m_State = BallState::Flying;
+}
+
+void Ball::ResetToWall(const glm::vec2& center, float wallRadius, float angleRad)
+{
+	float offset = 5.0f; // 원주보다 이만큼 안쪽에 배치
+	float radius = wallRadius - m_Radius - offset;
+
+	glm::vec2 pos = center + glm::vec2(cos(angleRad), sin(angleRad)) * radius;
+
+	m_Collider.SetCenter(pos);
+	SetPos(pos);
+	m_Velocity = glm::vec2(0.0f);
+	m_State = BallState::Ready;
+}
+
+void Ball::MoveAlongWall(float deltaAngle, const glm::vec2& center, float wallRadius)
+{
+	m_AimAngleRad += deltaAngle;
+
+	float offset = 5.0f;
+	float radius = wallRadius - m_Radius - offset;
+
+	glm::vec2 pos = center + glm::vec2(cos(m_AimAngleRad), sin(m_AimAngleRad)) * radius;
+
+	m_Collider.SetCenter(pos);
+	SetPos(pos);
+}
+
+void Ball::FireTowardsMouse(const glm::vec2& mouseWorldPos, float speed)
+{
+	glm::vec2 ballPos = m_Collider.GetCenter();
+	glm::vec2 direction = glm::normalize(mouseWorldPos - ballPos);
+
+	m_Velocity = direction * speed;
+	m_State = BallState::Flying;
 }
