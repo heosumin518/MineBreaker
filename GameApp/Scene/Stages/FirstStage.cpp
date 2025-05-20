@@ -174,7 +174,7 @@ void FirstStage::CreateBricks(const glm::vec2& wallCenter)
 	int cols = 10;
 	int rows = 12;
 
-	CreateMineMap(rows, cols, 13);
+	CreateMineMap(rows, cols, 10);
 
 	glm::vec2 boardSize = glm::vec2(cols * (brickSize.x + spacing), rows * (brickSize.y + spacing));
 
@@ -303,16 +303,16 @@ void FirstStage::CheckCollisionBetweenBallAndBrick()
 
 						if (ball->GetType() == BallType::Flag)
 						{
-							// 지뢰 벽돌에 깃발 표시를 했다면 점수를 2점 얻는다.
+							// 지뢰 벽돌에 깃발 표시를 했다면 점수를 5점 얻는다.
 							if (brick->GetType() == BrickType::Mine)
 							{
 								brick->SetType(BrickType::Flagged);
-								m_Score += 2;
+								m_Score += 5;
 							}
-							// 지뢰가 아닌 벽돌에 깃발 표시를 했다면 점수를 1점 잃는다.
+							// 지뢰가 아닌 벽돌에 깃발 표시를 했다면 점수를 2점 잃는다.
 							else
 							{
-								m_Score -= 1;
+								m_Score -= 2;
 							}
 						}
 
@@ -382,10 +382,10 @@ bool FirstStage::CheckIsClear()
 void FirstStage::RenderUI()
 {
 	std::string text1 = "Life: " + std::to_string(m_Life);
-	m_FontRenderer->RenderText(text1.c_str(), 100, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+	m_FontRenderer->RenderText(text1.c_str(), 80, 700, Color{ 1.f, 1.f, 1.f, 1.f });
 
 	std::string text2 = "Score: " + std::to_string(m_Score);
-	m_FontRenderer->RenderText(text2.c_str(), 420, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+	m_FontRenderer->RenderText(text2.c_str(), 440, 700, Color{ 1.f, 1.f, 1.f, 1.f });
 
 	m_FontRenderer->RenderText("Press 'SHIFT' to swtich ball's type", 130, 50, Color{ 1.f, 1.f, 1.f, 1.f });
 }

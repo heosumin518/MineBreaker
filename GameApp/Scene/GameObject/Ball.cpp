@@ -41,7 +41,7 @@ void Ball::Update(float deltaTime)
 		// 벽 중심으로 끌어당기는 중력을 적용
 		glm::vec2 gravityDir = glm::normalize(m_WallCenter - pos);
 
-		float gravityStrength = 400.0f;
+		float gravityStrength = 100.0f;
 		m_Velocity += gravityDir * gravityStrength * deltaTime;
 
 		//// 속도 제한
