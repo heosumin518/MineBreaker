@@ -25,6 +25,8 @@ public:
 	void CheckCollisionBetweenBallAndBrick();
 
 	void CheckBallType();
+	bool CheckIsDead();
+	bool CheckIsClear();
 
 	void RenderUI();
 
@@ -36,5 +38,7 @@ private:
 	std::vector<std::vector<Cell>> m_MineMap;
 
 	float m_PrevRadian;
+
+	bool m_IsCleared;
 };
 

@@ -38,7 +38,6 @@ void Ball::Update(float deltaTime)
 
 		glm::vec2 pos = m_Collider.GetCenter();
 
-
 		// 벽 중심으로 끌어당기는 중력을 적용
 		glm::vec2 gravityDir = glm::normalize(m_WallCenter - pos);
 

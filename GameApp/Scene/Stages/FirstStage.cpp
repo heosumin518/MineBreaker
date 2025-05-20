@@ -9,6 +9,7 @@ FirstStage::FirstStage(const std::string& name, const std::shared_ptr<FontRender
 	: Scene(name, fontRenderer)
 	, m_Life(5)
 	, m_Score(0)
+	, m_IsCleared(false)
 {
 	Initialize();
 }
@@ -32,6 +33,12 @@ void FirstStage::Initialize()
 
 void FirstStage::Update(float deltaTime)
 {
+	bool isGameOver = CheckIsDead();
+	bool isGameClear = CheckIsClear();
+
+	if (isGameOver || isGameClear)
+		return;
+
 	for (auto* object : m_Objects)
 	{
 		object->Update(deltaTime);
@@ -44,17 +51,25 @@ void FirstStage::Update(float deltaTime)
 
 void FirstStage::Render()
 {
+	m_IsCleared = true;
+
 	for (auto* object : m_Objects)
 	{
 		if (object->GetIsVisible())
 		{
 			object->Render();
+			
+			if (object->GetName() == "Brick")
+			{
+				m_IsCleared = false;
+			}
 		}
 		else
 		{
 			if (object->GetName() == "Brick")
 			{
 				Brick* brick = dynamic_cast<Brick*>(object);
+
 				std::string number = std::to_string(brick->GetMineCount());
 				float offsetX = 10.0f;
 				float offsetY = 1.f;
@@ -67,7 +82,7 @@ void FirstStage::Render()
 					}
 					else if (brick->GetType() == BrickType::Flagged)
 					{
-						m_FontRenderer->RenderText("O", brick->GetPos().x + offsetX-2.0f, brick->GetPos().y + offsetY, Color{ 0.0f, 1.0f, 0.0f, 1.0f });
+						m_FontRenderer->RenderText("O", brick->GetPos().x + offsetX - 2.0f, brick->GetPos().y + offsetY, Color{ 0.0f, 1.0f, 0.0f, 1.0f });
 					}
 					continue;
 				}
@@ -79,7 +94,7 @@ void FirstStage::Render()
 					//case 1: color = Color{ 0.3f, 0.6f, 1.0f, 1.0f }; break; // 연파란색
 					case 1: color = Color{ 1.0f, 1.0f, 1.0f, 1.0f }; break; // 흰색
 					case 2: color = Color{ 1.0f, 0.5f, 0.0f, 1.0f }; break; // 주황색
-					//case 2: color = Color{ 0.0f, 0.8f, 0.0f, 1.0f }; break; // 초록색
+						//case 2: color = Color{ 0.0f, 0.8f, 0.0f, 1.0f }; break; // 초록색
 					case 3: color = Color{ 1.0f, 1.0f, 0.0f, 1.0f }; break; // 노란색
 					case 4: color = Color{ 0.0f, 0.0f, 0.5f, 1.0f }; break; // 남색
 					case 5: color = Color{ 0.5f, 0.3f, 0.1f, 1.0f }; break; // 갈색
@@ -168,7 +183,7 @@ void FirstStage::CreateBricks(const glm::vec2& wallCenter)
 
 	for (int row = 0; row < rows; ++row)
 	{
-		for (int col = 0; col < cols; ++col) 
+		for (int col = 0; col < cols; ++col)
 		{
 			// Y축 뒤집기 적용
 			glm::vec2 pos = boardOrigin + glm::vec2(
@@ -244,7 +259,8 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 		}
 		else if (ball->GetState() == BallState::Ready)
 		{
-			m_FontRenderer->RenderText("Press 'SPACE' to Fire!", 195, 100, Color{ 1.f, 1.f, 1.f, 1.f });
+			m_FontRenderer->RenderText("Press 'SPACE' to Fire", 195, 100, Color{ 1.f, 1.f, 1.f, 1.f });
+			m_FontRenderer->RenderText("Use 'A' / 'D' to move along the wall", 128, 75, Color{ 1.f, 1.f, 1.f, 1.f });
 
 			glm::vec2 wallCenter = wall->GetCenter();
 			float wallRadius = wall->GetRadius();
@@ -337,6 +353,30 @@ void FirstStage::CheckBallType()
 	{
 		leftShiftReleased = true;
 	}
+}
+
+bool FirstStage::CheckIsDead()
+{
+	if (m_Life <= 0)
+	{
+		m_FontRenderer->RenderText("GAME OVER!!", 225, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+
+		return true;
+	}
+
+	return false;
+}
+
+bool FirstStage::CheckIsClear()
+{
+	if (m_IsCleared)
+	{
+		m_FontRenderer->RenderText("GAME CLEAR!!", 220, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+
+		return true;
+	}
+
+	return false;
 }
 
 void FirstStage::RenderUI()
