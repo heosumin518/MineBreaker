@@ -19,7 +19,8 @@ void FirstStage::Initialize()
 	ball->SetName("Ball");
 	AddObject(ball);
 
-
+	float angle = glm::radians(-90.0f); // 아래 쪽에서 발사 대기
+	ball->ResetToWall(wall->GetCenter(), wall->GetRadius(), angle);
 }
 
 glm::vec2 GetMouseWorldPosition(GLFWwindow* window)

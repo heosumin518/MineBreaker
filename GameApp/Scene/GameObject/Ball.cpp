@@ -59,6 +59,8 @@ void Ball::ResetToWall(const glm::vec2& center, float wallRadius, float angleRad
 	float offset = 5.0f; // 원주보다 이만큼 안쪽에 배치
 	float radius = wallRadius - m_Radius - offset;
 
+	m_AimAngleRad = glm::radians(-90.0f);
+
 	glm::vec2 pos = center + glm::vec2(cos(angleRad), sin(angleRad)) * radius;
 
 	m_Collider.SetCenter(pos);
