@@ -49,13 +49,4 @@ void Brick::Render()
     glVertex2f(pos.x + size.x, pos.y + size.y);
     glVertex2f(pos.x, pos.y + size.y);
     glEnd();
-
-    //// 테두리 라인
-    //glColor3f(0.1f, 0.1f, 0.1f); // 어두운 선
-    //glBegin(GL_LINE_LOOP);
-    //glVertex2f(pos.x, pos.y);
-    //glVertex2f(pos.x + m_Size.x, pos.y);
-    //glVertex2f(pos.x + m_Size.x, pos.y + m_Size.y);
-    //glVertex2f(pos.x, pos.y + m_Size.y);
-    //glEnd();
 }

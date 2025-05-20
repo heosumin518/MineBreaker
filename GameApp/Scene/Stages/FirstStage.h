@@ -6,7 +6,7 @@ class Brick;
 class FirstStage : public Scene
 {
 public:
-	FirstStage(const std::string& name);
+	FirstStage(const std::string& name, const std::shared_ptr<FontRenderer>& fontRenderer);
 
 	void Initialize();
 	void Update(float deltaTime) override;

@@ -1,11 +1,11 @@
 #include "SceneManager.h"
 #include "pch.h"
 #include "glad/glad.h"
+#include "Renderer/FontRenderer.h"
 
 SceneManager::SceneManager()
 	: m_CurrentScene(nullptr)
 {
-	
 }
 
 void SceneManager::Update(float deltaTime)

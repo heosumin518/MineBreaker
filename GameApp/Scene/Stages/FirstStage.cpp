@@ -3,9 +3,10 @@
 #include "../GameObject/CircleWall.h"
 #include "../GameObject/Ball.h"
 #include "../GameObject/Brick.h"
+#include "../Engine/Renderer/FontRenderer.h"
 
-FirstStage::FirstStage(const std::string& name)
-	: Scene(name)
+FirstStage::FirstStage(const std::string& name, const std::shared_ptr<FontRenderer>& fontRenderer)
+	: Scene(name, fontRenderer)
 	, m_Life(5)
 {
 	Initialize();
@@ -61,6 +62,7 @@ void FirstStage::Render()
 			object->Render();
 	}
 
+	m_FontRenderer->RenderText("Hello STB!", 100, 100, Color{1.f, 1.f, 1.f, 1.f});
 }
 
 void FirstStage::CreateBricks(const glm::vec2& wallCenter)

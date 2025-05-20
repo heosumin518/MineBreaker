@@ -1,6 +1,7 @@
+#include "glad/glad.h"
 #include "FontRenderer.h"
 #define STB_TRUETYPE_IMPLEMENTATION
-#include "../../Dependencies/stb/stb_truetype.h"    // 인클루드 필요함
+#include "../../Dependencies/stb/stb_truetype.h"    // 인클루드 필요함 지우지 말 것!
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -24,13 +25,23 @@ bool FontRenderer::LoadFont(const char* path, float size)
 
     glGenTextures(1, &m_FontTexture);
     glBindTexture(GL_TEXTURE_2D, m_FontTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Swizzle 설정
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_ONE);  // R = 1
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_ONE);  // G = 1
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_ONE);  // B = 1
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_RED);  // A = RED 채널
     return true;
 }
 
-void FontRenderer::RenderText(const char* text, float x, float y)
+void FontRenderer::RenderText(const char* text, float x, float y, Color color)
 {
+    glColor4f(color.r, color.g, color.b, color.a);
+
     glBindTexture(GL_TEXTURE_2D, m_FontTexture);
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
@@ -64,6 +75,8 @@ void FontRenderer::RenderText(const char* text, float x, float y)
 
     glEnd();
     glDisable(GL_TEXTURE_2D);
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // 상태 초기화
 }
 
 void FontRenderer::Cleanup()

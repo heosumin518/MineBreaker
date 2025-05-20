@@ -41,9 +41,6 @@ void Application::Run() const
 
 		m_Renderer->BeginRender(m_Window->GetWidth(), m_Window->GetHeight());
 
-		m_FontRenderer->LoadFont("../Resources/Fonts/NotoSansKR-Regular.ttf", 32.0f);
-		m_FontRenderer->RenderText("Hello STB!", 100, 100);
-
 		m_SceneManager->Update(m_Timer->GetDeltaTime());
 		m_SceneManager->Render();
 

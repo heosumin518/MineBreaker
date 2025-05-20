@@ -1,6 +1,9 @@
 #pragma once
+#include <memory>
 #include <vector>
 #include "Scene.h"
+
+class FontRenderer;
 
 class SceneManager
 {
@@ -10,11 +13,12 @@ public:
 	void Update(float deltaTime);
 	void Render();
 
-	Scene* GetSceneByName(const std::string& name) const;
-
 	void AddScene(Scene* scene);
-	void SetCurrentScene(Scene* scene) { m_CurrentScene = scene; }
+
+	Scene* GetSceneByName(const std::string& name) const;
 	Scene* GetCurrentScene() const { return m_CurrentScene; }
+
+	void SetCurrentScene(Scene* scene) { m_CurrentScene = scene; }
 
 private:
 	Scene* m_CurrentScene;

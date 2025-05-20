@@ -30,6 +30,11 @@ void Renderer::BeginRender(uint32_t width, uint32_t height)
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // 배경색
     Clear();  // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+	// 알파블렌딩 설정.
+	// TODO: 아래 두 설정은 매 렌더링을 시작할때 불러야하는지 아직 알아보지 않았다. 이후 수정이 필요하면 수정해야함
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
