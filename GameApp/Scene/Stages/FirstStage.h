@@ -22,7 +22,9 @@ public:
 	void CreateBricks(const glm::vec2& wallCenter);
 
 	void CheckCollisionBetweenBallAndWall(float deltaTime);
-	void CheckCollisionBetweenBallAndBrick(float deltaTime);
+	void CheckCollisionBetweenBallAndBrick();
+
+	void CheckBallType();
 
 	void RenderUI();
 

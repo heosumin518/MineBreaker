@@ -1,6 +1,6 @@
 #include "Ball.h"
-
 #include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 Ball::Ball(const glm::vec2& startPos, float radius)
 	: m_Collider(startPos, radius)
@@ -8,9 +8,26 @@ Ball::Ball(const glm::vec2& startPos, float radius)
 	, m_Radius(radius)
 	, m_State(BallState::Ready)
 	, m_Type(BallType::Normal)
+	, m_FireDir(glm::vec2(0.0f))
 {
 	SetPos(startPos);
 	m_Velocity = glm::vec2(150.0f, 80.0f);
+}
+
+// TODO: 수정 필요.. Util.h에서 가져다 쓰려 했지만 헤더 인클루드 오류때문에 임시.
+glm::vec2 GetMouseWorldPositions(GLFWwindow* window)
+{
+	double mouseX, mouseY;
+	glfwGetCursorPos(window, &mouseX, &mouseY);
+
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	// OpenGL의 2D 좌표계는 보통 좌하단이 (0,0)
+	float worldX = static_cast<float>(mouseX);
+	float worldY = static_cast<float>(height - mouseY); // Y축 뒤집기
+
+	return glm::vec2(worldX, worldY);
 }
 
 void Ball::Update(float deltaTime)
@@ -20,10 +37,29 @@ void Ball::Update(float deltaTime)
 		m_PrevPos = m_Collider.GetCenter();
 
 		glm::vec2 pos = m_Collider.GetCenter();
-		pos += m_Velocity * deltaTime;
-		m_Collider.SetCenter(pos);
-		SetPos(pos);
+
+
+		// 벽 중심으로 끌어당기는 중력을 적용
+		glm::vec2 gravityDir = glm::normalize(m_WallCenter - pos);
+
+		float gravityStrength = 400.0f;
+		m_Velocity += gravityDir * gravityStrength * deltaTime;
+
+		//// 속도 제한
+		const float maxSpeed = 600.0f;
+		if (glm::length(m_Velocity) > maxSpeed)
+			m_Velocity = glm::normalize(m_Velocity) * maxSpeed;
+
+		// 위치 업데이트
+		m_PrevPos = pos;
+		glm::vec2 newPos = pos + m_Velocity * deltaTime;
+		m_Collider.SetCenter(newPos);
+		SetPos(newPos);
 	}
+
+	glm::vec2 ballPos = m_Collider.GetCenter();
+	glm::vec2 direction = glm::normalize(GetMouseWorldPositions(glfwGetCurrentContext()) - ballPos);
+	m_FireDir = direction;
 }
 
 void Ball::Render()
@@ -51,6 +87,20 @@ void Ball::Render()
 		glVertex2f(x, y);
 	}
 	glEnd();
+
+	if (m_State == BallState::Flying)
+		return; // 이미 발사된 후면 안 그림
+
+	glm::vec2 pos = m_Collider.GetCenter();
+	float length = 50.0f; // 선의 길이
+
+	glm::vec2 end = pos + m_FireDir * length;
+
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f); // 빨간색
+	glVertex2f(pos.x, pos.y);
+	glVertex2f(end.x, end.y);
+	glEnd();
 }
 
 void Ball::Reflect(const glm::vec2& normal)
@@ -58,18 +108,12 @@ void Ball::Reflect(const glm::vec2& normal)
 	m_Velocity = glm::reflect(m_Velocity, normal);
 }
 
-void Ball::Fire(const glm::vec2& direction, float speed)
-{
-	m_Velocity = glm::normalize(direction) * speed;
-	m_State = BallState::Flying;
-}
-
 void Ball::ResetToWall(const glm::vec2& center, float wallRadius, float angleRad)
 {
 	float offset = 5.0f; // 원주보다 이만큼 안쪽에 배치
 	float radius = wallRadius - m_Radius - offset;
 
-	m_AimAngleRad = glm::radians(-90.0f);
+	m_AimAngleRad = angleRad;
 
 	glm::vec2 pos = center + glm::vec2(cos(angleRad), sin(angleRad)) * radius;
 
@@ -101,5 +145,6 @@ void Ball::FireTowardsMouse(const glm::vec2& mouseWorldPos, float speed)
 	glm::vec2 direction = glm::normalize(mouseWorldPos - ballPos);
 
 	m_Velocity = direction * speed;
+	m_FireDir = direction;
 	m_State = BallState::Flying;
 }

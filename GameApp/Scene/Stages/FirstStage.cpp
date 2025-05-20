@@ -23,6 +23,7 @@ void FirstStage::Initialize()
 
 	Ball* ball = new Ball({ 300.0f, 400.0f }, 10.0f);
 	ball->SetName("Ball");
+	ball->SetWallCenter(wall->GetCenter());
 	AddObject(ball);
 
 	float angle = glm::radians(-90.0f); // 아래 쪽에서 발사 대기
@@ -37,7 +38,8 @@ void FirstStage::Update(float deltaTime)
 	}
 
 	CheckCollisionBetweenBallAndWall(deltaTime);
-	CheckCollisionBetweenBallAndBrick(deltaTime);
+	CheckCollisionBetweenBallAndBrick();
+	CheckBallType();
 }
 
 void FirstStage::Render()
@@ -63,6 +65,10 @@ void FirstStage::Render()
 					{
 						m_FontRenderer->RenderText("X", brick->GetPos().x + offsetX, brick->GetPos().y + offsetY, Color{ 1.0f, 0.0f, 0.0f, 1.0f });
 					}
+					else if (brick->GetType() == BrickType::Flagged)
+					{
+						m_FontRenderer->RenderText("O", brick->GetPos().x + offsetX-2.0f, brick->GetPos().y + offsetY, Color{ 0.0f, 1.0f, 0.0f, 1.0f });
+					}
 					continue;
 				}
 
@@ -70,8 +76,10 @@ void FirstStage::Render()
 				Color color = Color{ 1.0f, 1.0f, 1.0f, 1.0f }; // 기본 흰색
 				switch (brick->GetMineCount())
 				{
-					case 1: color = Color{ 0.3f, 0.6f, 1.0f, 1.0f }; break; // 연파란색
-					case 2: color = Color{ 0.0f, 0.8f, 0.0f, 1.0f }; break; // 초록색
+					//case 1: color = Color{ 0.3f, 0.6f, 1.0f, 1.0f }; break; // 연파란색
+					case 1: color = Color{ 1.0f, 1.0f, 1.0f, 1.0f }; break; // 흰색
+					case 2: color = Color{ 1.0f, 0.5f, 0.0f, 1.0f }; break; // 주황색
+					//case 2: color = Color{ 0.0f, 0.8f, 0.0f, 1.0f }; break; // 초록색
 					case 3: color = Color{ 1.0f, 1.0f, 0.0f, 1.0f }; break; // 노란색
 					case 4: color = Color{ 0.0f, 0.0f, 0.5f, 1.0f }; break; // 남색
 					case 5: color = Color{ 0.5f, 0.3f, 0.1f, 1.0f }; break; // 갈색
@@ -201,12 +209,17 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 			if (ball->GetState() == BallState::Ready)
 			{
 				glm::vec2 mouseWorld = GetMouseWorldPosition(glfwGetCurrentContext());
-				ball->FireTowardsMouse(mouseWorld);
+				ball->FireTowardsMouse(mouseWorld, 150.0f);
 				m_PrevRadian = ball->GetAimAngleRad();
 			}
 			else if (ball->GetState() == BallState::Flying)
 			{
-				ball->ResetToWall(wall->GetCenter(), wall->GetRadius(), ball->GetAimAngleRad());
+				glm::vec2 ballPos = ball->GetCollider()->GetCenter();
+				glm::vec2 center = wall->GetCenter();
+				glm::vec2 dir = glm::normalize(ballPos - center);
+				float angleRad = atan2(dir.y, dir.x);
+
+				ball->ResetToWall(center, wall->GetRadius(), angleRad);
 			}
 
 			spaceReleased = false;
@@ -231,7 +244,7 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 		}
 		else if (ball->GetState() == BallState::Ready)
 		{
-			m_FontRenderer->RenderText("Press 'Space' to Fire!", 195, 100, Color{ 1.f, 1.f, 1.f, 1.f });
+			m_FontRenderer->RenderText("Press 'SPACE' to Fire!", 195, 100, Color{ 1.f, 1.f, 1.f, 1.f });
 
 			glm::vec2 wallCenter = wall->GetCenter();
 			float wallRadius = wall->GetRadius();
@@ -245,7 +258,7 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 	}
 }
 
-void FirstStage::CheckCollisionBetweenBallAndBrick(float deltaTime)
+void FirstStage::CheckCollisionBetweenBallAndBrick()
 {
 	// 충돌 검사
 	Ball* ball = dynamic_cast<Ball*>(GetObjectByName("Ball"));
@@ -272,6 +285,22 @@ void FirstStage::CheckCollisionBetweenBallAndBrick(float deltaTime)
 
 						brick->SetIsVisible(false);
 
+						if (ball->GetType() == BallType::Flag)
+						{
+							// 지뢰 벽돌에 깃발 표시를 했다면 점수를 2점 얻는다.
+							if (brick->GetType() == BrickType::Mine)
+							{
+								brick->SetType(BrickType::Flagged);
+								m_Score += 2;
+							}
+							// 지뢰가 아닌 벽돌에 깃발 표시를 했다면 점수를 1점 잃는다.
+							else
+							{
+								m_Score -= 1;
+							}
+						}
+
+						// 목숨 및 점수 처리
 						if (brick->GetType() == BrickType::Mine)
 							m_Life -= 1;
 						else if (brick->GetType() == BrickType::Normal)
@@ -285,6 +314,31 @@ void FirstStage::CheckCollisionBetweenBallAndBrick(float deltaTime)
 	}
 }
 
+void FirstStage::CheckBallType()
+{
+	static bool leftShiftReleased = true;
+
+	Ball* ball = dynamic_cast<Ball*>(GetObjectByName("Ball"));
+
+	if (ball == nullptr)
+		return;
+
+	if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && leftShiftReleased)
+	{
+		if (ball->GetType() == BallType::Normal)
+			ball->SetType(BallType::Flag);
+		else
+			ball->SetType(BallType::Normal);
+
+		leftShiftReleased = false;
+	}
+
+	if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+	{
+		leftShiftReleased = true;
+	}
+}
+
 void FirstStage::RenderUI()
 {
 	std::string text1 = "Life: " + std::to_string(m_Life);
@@ -293,5 +347,5 @@ void FirstStage::RenderUI()
 	std::string text2 = "Score: " + std::to_string(m_Score);
 	m_FontRenderer->RenderText(text2.c_str(), 420, 700, Color{ 1.f, 1.f, 1.f, 1.f });
 
-	m_FontRenderer->RenderText("Press 'Enter' to swtich ball's type", 130, 50, Color{ 1.f, 1.f, 1.f, 1.f });
+	m_FontRenderer->RenderText("Press 'SHIFT' to swtich ball's type", 130, 50, Color{ 1.f, 1.f, 1.f, 1.f });
 }

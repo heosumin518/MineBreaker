@@ -28,15 +28,7 @@ void Brick::Render()
     glm::vec2 pos = GetPos(); // 왼쪽 아래 꼭짓점 기준
     glm::vec2 size = m_Size;
 
-    // 색 설정
-    switch (m_Type)
-    {
-        case BrickType::Flagged:
-            glColor3f(0.0f, 0.5f, 1.0f); // 파란색
-            break;
-        default:
-            glColor3f(0.6f, 0.6f, 0.6f); // 회색
-    }
+    glColor3f(0.6f, 0.6f, 0.6f); // 회색
 
     // 사각형 그리기 (좌하단 기준)
     glBegin(GL_QUADS);

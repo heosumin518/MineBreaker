@@ -22,6 +22,7 @@ public:
 	BrickType GetType() const { return m_Type; }
 	uint32_t GetMineCount() const { return m_MineCount; }
 	void SetMineCount(uint32_t count) { m_MineCount = count; }
+	void SetType(BrickType type) { m_Type = type; }
 
 private:
 	AABBCollider m_Collider;
