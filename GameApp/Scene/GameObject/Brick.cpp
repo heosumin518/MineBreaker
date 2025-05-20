@@ -31,15 +31,11 @@ void Brick::Render()
     // 색 설정
     switch (m_Type)
     {
-        case BrickType::Normal:
-            glColor3f(0.6f, 0.6f, 0.6f); // 회색
-            break;
-        case BrickType::Mine:
-            glColor3f(1.0f, 0.0f, 0.0f); // 살구
-            break;
         case BrickType::Flagged:
             glColor3f(0.0f, 0.5f, 1.0f); // 파란색
             break;
+        default:
+            glColor3f(0.6f, 0.6f, 0.6f); // 회색
     }
 
     // 사각형 그리기 (좌하단 기준)

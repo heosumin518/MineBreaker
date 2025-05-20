@@ -19,11 +19,11 @@ void FirstStage::Initialize()
 	wall->SetName("Wall");
 	AddObject(wall);
 
+	CreateBricks(wall->GetCenter());
+
 	Ball* ball = new Ball({ 300.0f, 400.0f }, 10.0f);
 	ball->SetName("Ball");
 	AddObject(ball);
-
-	CreateBricks(wall->GetCenter());
 
 	float angle = glm::radians(-90.0f); // 아래 쪽에서 발사 대기
 	ball->ResetToWall(wall->GetCenter(), wall->GetRadius(), angle);
@@ -45,10 +45,103 @@ void FirstStage::Render()
 	for (auto* object : m_Objects)
 	{
 		if (object->GetIsVisible())
+		{
 			object->Render();
+		}
+		else
+		{
+			if (object->GetName() == "Brick")
+			{
+				Brick* brick = dynamic_cast<Brick*>(object);
+				std::string number = std::to_string(brick->GetMineCount());
+				float offsetX = 10.0f;
+				float offsetY = 1.f;
+
+				if (number == "0")
+				{
+					if (brick->GetType() == BrickType::Mine)
+					{
+						m_FontRenderer->RenderText("X", brick->GetPos().x + offsetX, brick->GetPos().y + offsetY, Color{ 1.0f, 0.0f, 0.0f, 1.0f });
+					}
+					continue;
+				}
+
+				// 숫자 색상 설정
+				Color color = Color{ 1.0f, 1.0f, 1.0f, 1.0f }; // 기본 흰색
+				switch (brick->GetMineCount())
+				{
+					case 1: color = Color{ 0.3f, 0.6f, 1.0f, 1.0f }; break; // 연파란색
+					case 2: color = Color{ 0.0f, 0.8f, 0.0f, 1.0f }; break; // 초록색
+					case 3: color = Color{ 1.0f, 1.0f, 0.0f, 1.0f }; break; // 노란색
+					case 4: color = Color{ 0.0f, 0.0f, 0.5f, 1.0f }; break; // 남색
+					case 5: color = Color{ 0.5f, 0.3f, 0.1f, 1.0f }; break; // 갈색
+				}
+
+				m_FontRenderer->RenderText(number.c_str(), brick->GetPos().x + offsetX, brick->GetPos().y + offsetY, color);
+			}
+		}
 	}
 
 	RenderUI();
+}
+
+void FirstStage::CreateMineMap(int rows, int cols, int mineCount)
+{
+	// 지뢰보드 테두리에 지뢰가 배치되지 않을 때 까지 지뢰보드를 생성
+	while (true)
+	{
+		m_MineMap.assign(rows, std::vector<Cell>(cols)); // 초기화
+
+		// 지뢰 배치
+		int minesToPlace = mineCount;
+		while (minesToPlace > 0) {
+			int r = rand() % rows;
+			int c = rand() % cols;
+
+			// 테두리는 제외
+			if (r == 0 || r == rows - 1 || c == 0 || c == cols - 1)
+				continue;
+
+			if (!m_MineMap[r][c].isMine) {
+				m_MineMap[r][c].isMine = true;
+				--minesToPlace;
+			}
+		}
+
+		// 테두리에 지뢰가 들어갔는지 확인
+		bool hasMineOnEdge = false;
+		for (int r = 0; r < rows; ++r) {
+			for (int c = 0; c < cols; ++c) {
+				if ((r == 0 || r == rows - 1 || c == 0 || c == cols - 1) && m_MineMap[r][c].isMine) {
+					hasMineOnEdge = true;
+					break;
+				}
+			}
+			if (hasMineOnEdge) break;
+		}
+
+		if (!hasMineOnEdge)
+			break; // 지뢰 배치 완료
+	}
+
+	// 숫자 계산
+	for (int r = 0; r < rows; ++r) {
+		for (int c = 0; c < cols; ++c) {
+			if (m_MineMap[r][c].isMine)
+				continue;
+
+			int count = 0;
+			for (int dr = -1; dr <= 1; ++dr) {
+				for (int dc = -1; dc <= 1; ++dc) {
+					int nr = r + dr, nc = c + dc;
+					if (nr >= 0 && nr < rows && nc >= 0 && nc < cols &&
+						m_MineMap[nr][nc].isMine)
+						++count;
+				}
+			}
+			m_MineMap[r][c].adjacentMines = count;
+		}
+	}
 }
 
 void FirstStage::CreateBricks(const glm::vec2& wallCenter)
@@ -58,6 +151,8 @@ void FirstStage::CreateBricks(const glm::vec2& wallCenter)
 	int cols = 10;
 	int rows = 12;
 
+	CreateMineMap(rows, cols, 13);
+
 	glm::vec2 boardSize = glm::vec2(cols * (brickSize.x + spacing), rows * (brickSize.y + spacing));
 
 	// 보드의 좌하단 기준점 계산
@@ -65,18 +160,30 @@ void FirstStage::CreateBricks(const glm::vec2& wallCenter)
 
 	for (int row = 0; row < rows; ++row)
 	{
-		for (int col = 0; col < cols; ++col)
+		for (int col = 0; col < cols; ++col) 
 		{
+			// Y축 뒤집기 적용
 			glm::vec2 pos = boardOrigin + glm::vec2(
 				col * (brickSize.x + spacing),
-				row * (brickSize.y + spacing)
+				(rows - 1 - row) * (brickSize.y + spacing)
 			);
 
-			Brick* brick = new Brick(pos, brickSize, BrickType::Normal);
+			const Cell& cell = m_MineMap[row][col];
+			BrickType type = BrickType::Normal;
+
+			if (cell.isMine) {
+				type = BrickType::Mine;
+			}
+
+			Brick* brick = new Brick(pos, brickSize, type);
+			brick->SetName("Brick");
+			brick->SetMineCount(cell.adjacentMines);
+
 			AddObject(brick);
 			m_Bricks.push_back(brick);
 		}
 	}
+
 }
 
 void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
@@ -124,7 +231,7 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 		}
 		else if (ball->GetState() == BallState::Ready)
 		{
-			m_FontRenderer->RenderText("Press Space to Fire!", 200, 100, Color{ 1.f, 1.f, 1.f, 1.f });
+			m_FontRenderer->RenderText("Press 'Space' to Fire!", 195, 100, Color{ 1.f, 1.f, 1.f, 1.f });
 
 			glm::vec2 wallCenter = wall->GetCenter();
 			float wallRadius = wall->GetRadius();
@@ -165,7 +272,10 @@ void FirstStage::CheckCollisionBetweenBallAndBrick(float deltaTime)
 
 						brick->SetIsVisible(false);
 
-						m_Score += 1;
+						if (brick->GetType() == BrickType::Mine)
+							m_Life -= 1;
+						else if (brick->GetType() == BrickType::Normal)
+							m_Score += 1;
 
 						break;	// 한번에 하나의 벽돌과의 충돌만 검사한다.
 					}
@@ -181,5 +291,7 @@ void FirstStage::RenderUI()
 	m_FontRenderer->RenderText(text1.c_str(), 100, 700, Color{ 1.f, 1.f, 1.f, 1.f });
 
 	std::string text2 = "Score: " + std::to_string(m_Score);
-	m_FontRenderer->RenderText(text2.c_str(), 425, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+	m_FontRenderer->RenderText(text2.c_str(), 420, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+
+	m_FontRenderer->RenderText("Press 'Enter' to swtich ball's type", 130, 50, Color{ 1.f, 1.f, 1.f, 1.f });
 }

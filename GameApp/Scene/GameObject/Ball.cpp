@@ -31,7 +31,14 @@ void Ball::Render()
 	const int segments = 32;
 	float angleStep = 2.0f * glm::pi<float>() / segments;
 
-	glColor3f(0.2f, 0.6f, 1.0f); // 밝은 파란색 공
+	if (m_Type == BallType::Normal)
+	{
+		glColor3f(0.2f, 0.6f, 1.0f); // 밝은 파란색
+	}
+	else if (m_Type == BallType::Flag)
+	{
+		glColor3f(0.0f, 0.8f, 0.0f); // 초록색
+	}
 
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(GetPos().x, GetPos().y); // 중심점

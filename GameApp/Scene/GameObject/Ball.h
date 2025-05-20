@@ -33,8 +33,10 @@ public:
 	ICollider* GetCollider() { return &m_Collider; }
 	BallState GetState() const { return m_State; }
 	float GetAimAngleRad() const { return m_AimAngleRad; }
+	BallType GetType() const { return m_Type; }
 	glm::vec2 GetPrevPos() const { return m_PrevPos; }
 	void SetAimAngleRad(float rad) { m_AimAngleRad = rad; }
+	void SetType(BallType type) { m_Type = type; }
 
 private:
 	CircleCollider m_Collider;
