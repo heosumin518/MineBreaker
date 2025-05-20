@@ -2,7 +2,7 @@
 
 AABBCollider::AABBCollider(const glm::vec2& pos, const glm::vec2& size)
 	: m_Min(pos)
-	, m_Max(size)
+	, m_Max(pos + size)
 {
 }
 

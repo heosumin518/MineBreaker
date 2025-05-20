@@ -7,6 +7,7 @@ Ball::Ball(const glm::vec2& startPos, float radius)
 	, m_Velocity(glm::vec2())
 	, m_Radius(radius)
 	, m_State(BallState::Ready)
+	, m_Type(BallType::Normal)
 {
 	SetPos(startPos);
 	m_Velocity = glm::vec2(150.0f, 80.0f);
@@ -16,6 +17,8 @@ void Ball::Update(float deltaTime)
 {
 	if (m_State == BallState::Flying)
 	{
+		m_PrevPos = m_Collider.GetCenter();
+
 		glm::vec2 pos = m_Collider.GetCenter();
 		pos += m_Velocity * deltaTime;
 		m_Collider.SetCenter(pos);
@@ -65,6 +68,7 @@ void Ball::ResetToWall(const glm::vec2& center, float wallRadius, float angleRad
 
 	m_Collider.SetCenter(pos);
 	SetPos(pos);
+
 	m_Velocity = glm::vec2(0.0f);
 	m_State = BallState::Ready;
 }
@@ -84,6 +88,8 @@ void Ball::MoveAlongWall(float deltaAngle, const glm::vec2& center, float wallRa
 
 void Ball::FireTowardsMouse(const glm::vec2& mouseWorldPos, float speed)
 {
+	m_PrevPos = GetPos();
+
 	glm::vec2 ballPos = m_Collider.GetCenter();
 	glm::vec2 direction = glm::normalize(mouseWorldPos - ballPos);
 
