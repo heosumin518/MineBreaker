@@ -1,13 +1,14 @@
 #include "FirstStage.h"
-#include "GLFW/glfw3.h"
 #include "../GameObject/CircleWall.h"
 #include "../GameObject/Ball.h"
 #include "../GameObject/Brick.h"
+#include "../Engine/Core/Utils.h"
 #include "../Engine/Renderer/FontRenderer.h"
 
 FirstStage::FirstStage(const std::string& name, const std::shared_ptr<FontRenderer>& fontRenderer)
 	: Scene(name, fontRenderer)
 	, m_Life(5)
+	, m_Score(0)
 {
 	Initialize();
 }
@@ -26,21 +27,6 @@ void FirstStage::Initialize()
 
 	float angle = glm::radians(-90.0f); // 아래 쪽에서 발사 대기
 	ball->ResetToWall(wall->GetCenter(), wall->GetRadius(), angle);
-}
-
-glm::vec2 GetMouseWorldPosition(GLFWwindow* window)
-{
-	double mouseX, mouseY;
-	glfwGetCursorPos(window, &mouseX, &mouseY);
-
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-
-	// OpenGL의 2D 좌표계는 보통 좌하단이 (0,0)
-	float worldX = static_cast<float>(mouseX);
-	float worldY = static_cast<float>(height - mouseY); // Y축 뒤집기
-
-	return glm::vec2(worldX, worldY);
 }
 
 void FirstStage::Update(float deltaTime)
@@ -62,7 +48,7 @@ void FirstStage::Render()
 			object->Render();
 	}
 
-	m_FontRenderer->RenderText("Hello STB!", 100, 100, Color{1.f, 1.f, 1.f, 1.f});
+	RenderUI();
 }
 
 void FirstStage::CreateBricks(const glm::vec2& wallCenter)
@@ -86,7 +72,7 @@ void FirstStage::CreateBricks(const glm::vec2& wallCenter)
 				row * (brickSize.y + spacing)
 			);
 
-			Brick* brick = new Brick(pos, brickSize, BrickType::Mine);
+			Brick* brick = new Brick(pos, brickSize, BrickType::Normal);
 			AddObject(brick);
 			m_Bricks.push_back(brick);
 		}
@@ -138,6 +124,8 @@ void FirstStage::CheckCollisionBetweenBallAndWall(float deltaTime)
 		}
 		else if (ball->GetState() == BallState::Ready)
 		{
+			m_FontRenderer->RenderText("Press Space to Fire!", 200, 100, Color{ 1.f, 1.f, 1.f, 1.f });
+
 			glm::vec2 wallCenter = wall->GetCenter();
 			float wallRadius = wall->GetRadius();
 
@@ -177,10 +165,21 @@ void FirstStage::CheckCollisionBetweenBallAndBrick(float deltaTime)
 
 						brick->SetIsVisible(false);
 
+						m_Score += 1;
+
 						break;	// 한번에 하나의 벽돌과의 충돌만 검사한다.
 					}
 				}
 			}
 		}
 	}
+}
+
+void FirstStage::RenderUI()
+{
+	std::string text1 = "Life: " + std::to_string(m_Life);
+	m_FontRenderer->RenderText(text1.c_str(), 100, 700, Color{ 1.f, 1.f, 1.f, 1.f });
+
+	std::string text2 = "Score: " + std::to_string(m_Score);
+	m_FontRenderer->RenderText(text2.c_str(), 425, 700, Color{ 1.f, 1.f, 1.f, 1.f });
 }

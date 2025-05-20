@@ -35,7 +35,7 @@ void Brick::Render()
             glColor3f(0.6f, 0.6f, 0.6f); // 회색
             break;
         case BrickType::Mine:
-            glColor3f(1.0f, 0.0f, 0.0f); // 빨간색
+            glColor3f(1.0f, 0.0f, 0.0f); // 살구
             break;
         case BrickType::Flagged:
             glColor3f(0.0f, 0.5f, 1.0f); // 파란색

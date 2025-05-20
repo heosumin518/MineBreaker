@@ -17,8 +17,11 @@ public:
 	void CheckCollisionBetweenBallAndWall(float deltaTime);
 	void CheckCollisionBetweenBallAndBrick(float deltaTime);
 
+	void RenderUI();
+
 private:
-	uint32_t m_Life;
+	int m_Life;
+	uint32_t m_Score;
 	std::vector<Brick*> m_Bricks;
 
 	float m_PrevRadian;

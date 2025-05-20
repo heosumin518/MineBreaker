@@ -37,7 +37,7 @@ void Application::Run() const
 	while (!glfwWindowShouldClose(window))
 	{
 		m_Timer->Update();
-		processInput(window);	// temp
+		processInput(window);	// TODO: remove after proper input is implemented.
 
 		m_Renderer->BeginRender(m_Window->GetWidth(), m_Window->GetHeight());
 
