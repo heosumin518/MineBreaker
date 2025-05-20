@@ -1,6 +1,7 @@
 #pragma once
 #include "OpenGLContext.h"
 #include <memory>
+#include <string>
 
 struct WindowProps
 {

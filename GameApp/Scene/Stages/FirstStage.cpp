@@ -60,6 +60,7 @@ void FirstStage::Render()
 		if (object->GetIsVisible())
 			object->Render();
 	}
+
 }
 
 void FirstStage::CreateBricks(const glm::vec2& wallCenter)

@@ -125,42 +125,6 @@ group "Dependencies"
             "Dependencies/glm/glm/**.inl"
         }
 
--- FreeType
-    project "freetype"
-        location "Dependencies/freetype"
-        kind "StaticLib"
-        language "C"
-        staticruntime "off"
-
-        targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
-        objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-        -- FreeType 소스 파일 수동 추가
-        files {
-            "Dependencies/freetype/src/**.c",
-            "Dependencies/freetype/include/**.h"
-        }
-
-        includedirs {
-            "Dependencies/freetype/include",
-            "Dependencies/freetype/src"
-        }
-
-        defines {
-            "FT2_BUILD_LIBRARY"
-        }
-
-        filter "system:windows"
-            systemversion "latest"
-
-        filter "configurations:Debug"
-            defines { "_DEBUG" }
-            symbols "On"
-
-        filter "configurations:Release"
-            defines { "NDEBUG" }
-            optimize "On"
-
 group ""
 
 -- Engine 프로젝트
@@ -187,14 +151,12 @@ project "Engine"
         "Dependencies/glad/include",
         "Dependencies/spdlog/include",
         "Dependencies/glm",
-        "Dependencies/freetype/include",
-        "Dependencies/freetype/src"
+        "Dependencies/stb"
     }
 
     links {
         "glfw",
         "glad",
-        "freetype",
         "opengl32.lib"
     }
 
@@ -232,8 +194,7 @@ project "GameApp"
         "Dependencies/spdlog/include",
         "Dependencies/glad/include",
         "Dependencies/glm",
-        "Dependencies/freetype/include",
-        "Dependencies/freetype/src"
+        "Dependencies/stb"
     }
 
     links {

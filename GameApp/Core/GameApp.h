@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include "Core/Application.h"
+#include <string>
 
 class GameApp : public Application
 {

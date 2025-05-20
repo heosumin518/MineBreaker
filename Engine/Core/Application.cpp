@@ -3,6 +3,10 @@
 #include "Timer.h"
 #include "Renderer/Renderer.h"
 #include "Scene/SceneManager.h"
+#include "Renderer/FontRenderer.h"
+
+#include <filesystem>
+
 
 Application::Application(const AppInfo& spec)
 	: m_Info(spec)
@@ -17,6 +21,7 @@ Application::Application(const AppInfo& spec)
 	m_Timer = std::make_shared<Timer>();
 	m_Renderer = std::make_shared<Renderer>(m_Window->GetWidth(), m_Window->GetHeight());
 	m_SceneManager = std::make_shared<SceneManager>();
+	m_FontRenderer = std::make_shared<FontRenderer>();
 }
 
 void processInput(GLFWwindow* window)
@@ -35,6 +40,9 @@ void Application::Run() const
 		processInput(window);	// temp
 
 		m_Renderer->BeginRender(m_Window->GetWidth(), m_Window->GetHeight());
+
+		m_FontRenderer->LoadFont("../Resources/Fonts/NotoSansKR-Regular.ttf", 32.0f);
+		m_FontRenderer->RenderText("Hello STB!", 100, 100);
 
 		m_SceneManager->Update(m_Timer->GetDeltaTime());
 		m_SceneManager->Render();

@@ -1,7 +1,9 @@
 #pragma once
 #include "Renderer/Window.h"
 #include <memory>
+#include <string>
 
+class FontRenderer;
 class SceneManager;
 class Renderer;
 class Timer;
@@ -28,6 +30,7 @@ protected:
 	std::shared_ptr<Timer> m_Timer;
 	std::shared_ptr<Renderer> m_Renderer;
 	std::shared_ptr<SceneManager> m_SceneManager;
+	std::shared_ptr<FontRenderer> m_FontRenderer;
 
 private:
 	AppInfo m_Info;

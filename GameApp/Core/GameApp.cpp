@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Scene/Stages/FirstStage.h"
 #include "../Engine/Scene/SceneManager.h"
+#include "../Engine/Renderer/FontRenderer.h"
 
 void GameApp::Initialize()
 {
@@ -9,5 +10,4 @@ void GameApp::Initialize()
 
 	m_SceneManager->SetCurrentScene(scene);
 	m_SceneManager->AddScene(scene);
-
 }
